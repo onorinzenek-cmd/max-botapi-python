@@ -139,7 +139,7 @@ class LinkedMessage(BaseModel):
     """
     
     type: MessageLinkType
-    sender: User
+    sender: Optional[User] = None
     chat_id: Optional[int] = None
     message: MessageBody
 
@@ -160,7 +160,7 @@ class Message(BaseModel):
         bot (Optional[Bot]): Объект бота, исключается из сериализации.
     """
     
-    sender: User
+    sender: Optional[User] = None
     recipient: Recipient
     timestamp: int
     link: Optional[LinkedMessage] = None
