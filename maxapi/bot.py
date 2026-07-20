@@ -679,7 +679,10 @@ class Bot(BaseConnection):
             chat_id=chat_id,
             user_ids=[user_id]
         )
-        
+
+        if isinstance(members, Error):
+            return None
+
         if members.members:
             return members.members[0]
 
