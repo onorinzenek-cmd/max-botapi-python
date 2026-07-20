@@ -17,3 +17,6 @@ class ChatPermission(str, Enum):
     WRITE = 'write'
     EDIT = 'edit'
     DELETE = 'delete'
+    EDIT_LINK = 'edit_link'
+    CAN_CALL = 'can_call'
+    VIEW_STATS = 'view_stats'
