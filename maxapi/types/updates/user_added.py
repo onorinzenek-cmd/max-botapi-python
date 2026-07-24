@@ -27,8 +27,14 @@ class UserAdded(Update):
         """
         Возвращает кортеж идентификаторов (chat_id, user_id).
 
+        user_id — это ВСТУПИВШИЙ (self.user), а не inviter_id: тот же класс
+        бага, что был у MessageEdited.get_ids() — брался инициатор события
+        вместо его героя. При самоподписке inviter_id вовсе None (человек
+        вступил сам), и get_ids возвращал (chat_id, None). Кто добавил —
+        по-прежнему доступен в поле inviter_id.
+
         Returns:
             Tuple[Optional[int], Optional[int]]: Идентификаторы чата и пользователя.
         """
         
-        return (self.chat_id, self.inviter_id)
+        return (self.chat_id, self.user.user_id)
