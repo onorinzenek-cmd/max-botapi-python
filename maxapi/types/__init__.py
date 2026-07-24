@@ -22,6 +22,7 @@ from ..types.attachments.attachment import ContactAttachmentPayload
 from ..types.attachments.attachment import ButtonsPayload
 from ..types.attachments.attachment import StickerAttachmentPayload
 from ..types.attachments.buttons.callback_button import CallbackButton
+from ..types.attachments.buttons.clipboard_button import ClipboardButton
 from ..types.attachments.buttons.chat_button import ChatButton
 from ..types.attachments.buttons.link_button import LinkButton
 from ..types.attachments.buttons.request_contact import RequestContactButton
@@ -52,6 +53,7 @@ __all__ = [
     'InputMedia',
     'BotCommand',
     'CallbackButton',
+    'ClipboardButton',
     'ChatButton',
     'LinkButton',
     'RequestContactButton',
