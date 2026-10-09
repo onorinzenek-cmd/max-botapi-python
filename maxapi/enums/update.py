@@ -24,6 +24,7 @@ class UpdateType(str, Enum):
     DIALOG_CLEARED = 'dialog_cleared'
     DIALOG_MUTED = 'dialog_muted'
     DIALOG_UNMUTED = 'dialog_unmuted'
+    BOT_ADMIN_PERMISSIONS_CHANGED = 'bot_admin_permissions_changed'
 
     # Для начинки диспатчера
     ON_STARTED = 'on_started'

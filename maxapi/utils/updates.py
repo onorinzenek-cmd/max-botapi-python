@@ -27,7 +27,7 @@ async def enrich_event(event_object: Any, bot: Bot) -> Any:
     if not bot.auto_requests:
         return event_object
 
-    if hasattr(event_object, 'chat_id'):
+    if getattr(event_object, 'chat_id', None) is not None:
         event_object.chat = await bot.get_chat_by_id(event_object.chat_id)
 
     if isinstance(event_object, (MessageCreated, MessageEdited, MessageCallback)):

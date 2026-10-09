@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import os
+
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING
 
 from .client.default import DefaultConnectionProperties
+from .client.domain import CA_BUNDLE_ENV, choose_api
 from .types.errors import Error
 
 from .types.input_media import InputMedia, InputMediaBuffer
@@ -19,6 +22,7 @@ from .enums.update import UpdateType
 from .methods.add_admin_chat import AddAdminChat
 from .methods.add_members_chat import AddMembersChat
 from .methods.change_info import ChangeInfo
+from .methods.set_my_commands import SetMyCommands
 from .methods.delete_bot_from_chat import DeleteMeFromMessage
 from .methods.delete_chat import DeleteChat
 from .methods.delete_message import DeleteMessage
@@ -56,7 +60,7 @@ if TYPE_CHECKING:
     from .types.attachments.image import PhotoAttachmentRequestPayload
     from .types.attachments.video import Video
     from .types.chats import Chat, ChatMember, Chats
-    from .types.command import BotCommand
+    from .types.command import BotCommand, BotCommands
     from .types.message import Message, Messages, NewMessageLink
     from .types.users import ChatAdmin, User
 
@@ -113,6 +117,8 @@ class Bot(BaseConnection):
         super().__init__()
 
         self.bot = self
+        # адрес и SSL — по MAX_CA_BUNDLE (maxapi/client/domain.py)
+        self.API_URL, self.ssl_context = choose_api(os.environ.get(CA_BUNDLE_ENV))
         self.default_connection = default_connection or DefaultConnectionProperties()
         self.after_input_media_delay = after_input_media_delay or 2.0
         self.auto_check_subscriptions = auto_check_subscriptions
@@ -768,17 +774,18 @@ class Bot(BaseConnection):
     async def set_my_commands(
             self,
             *commands: BotCommand
-        ) -> User:
+        ) -> BotCommands:
         
         """
-        Устанавливает список команд бота.
+        Устанавливает список команд бота (`PATCH /me/commands`).
 
-        :param commands: Список команд
+        :param commands: Список команд, до 32 штук. Без аргументов —
+            удалить все команды.
 
-        :return: Обновленная информация о боте
+        :return: Команды, которые теперь поддерживает бот
         """
         
-        return await ChangeInfo(
+        return await SetMyCommands(
             bot=self,
             commands=list(commands)
         ).fetch()

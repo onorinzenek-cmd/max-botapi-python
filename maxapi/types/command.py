@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 
 
@@ -41,6 +41,18 @@ class BotCommand(BaseModel):
 
     name: str
     description: Optional[str] = None
+
+
+class BotCommands(BaseModel):
+    
+    """
+    Ответ `PATCH /me/commands`: команды, которые поддерживает бот.
+
+    Attributes:
+        commands (Optional[List[BotCommand]]): Список команд, до 32 штук.
+    """
+
+    commands: Optional[List[BotCommand]] = None
     
     
 class CommandStart(Command):

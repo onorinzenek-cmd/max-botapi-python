@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import os
+import ssl
 import mimetypes
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import aiofiles
 import puremagic
@@ -11,6 +12,7 @@ import puremagic
 from pydantic import BaseModel
 from aiohttp import ClientSession, ClientConnectionError, FormData
 
+from ..client.domain import OLD_API_URL
 from ..exceptions.invalid_token import InvalidToken
 from ..exceptions.max import MaxConnection
 
@@ -35,7 +37,7 @@ class BaseConnection:
     Метод request() может быть переопределён в потомках при необходимости.
     """
 
-    API_URL = 'https://botapi.max.ru'
+    API_URL = OLD_API_URL
     RETRY_DELAY = 2
     ATTEMPTS_COUNT = 5
     AFTER_MEDIA_INPUT_DELAY = 2.0
@@ -44,6 +46,16 @@ class BaseConnection:
         self.bot: Optional[Bot] = None
         self.session: Optional[ClientSession] = None
         self.after_input_media_delay: float = self.AFTER_MEDIA_INPUT_DELAY
+
+    def _ssl(self) -> Union[ssl.SSLContext, bool]:
+
+        """
+        SSL для запроса: контекст бота с сертификатом Минцифры (MAX_CA_BUNDLE)
+        или True — проверка aiohttp по умолчанию, как было.
+        """
+
+        context = getattr(self.bot, 'ssl_context', None)
+        return context if context is not None else True
 
     async def request(
             self,
@@ -83,6 +95,7 @@ class BaseConnection:
             r = await self.bot.session.request(
                 method=method.value, 
                 url=path.value if isinstance(path, ApiPath) else path, 
+                ssl=self._ssl(),
                 **kwargs
             )
         except ClientConnectionError as e:
@@ -148,7 +161,8 @@ class BaseConnection:
         async with ClientSession() as session:
             response = await session.post(
                 url=url, 
-                data=form
+                data=form,
+                ssl=self._ssl()
             )
 
             return await response.text()
@@ -195,7 +209,8 @@ class BaseConnection:
         async with ClientSession() as session:
             response = await session.post(
                 url=url, 
-                data=form
+                data=form,
+                ssl=self._ssl()
             )
             return await response.text()
         
@@ -220,7 +235,7 @@ class BaseConnection:
         }
 
         async with ClientSession() as session:
-            async with session.get(url, headers=headers) as response:
+            async with session.get(url, headers=headers, ssl=self._ssl()) as response:
                 
                 if response.status == 200:
                     async with aiofiles.open(path, 'wb') as f:

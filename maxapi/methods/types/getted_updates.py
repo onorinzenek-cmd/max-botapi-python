@@ -1,9 +1,11 @@
 from typing import TYPE_CHECKING
 
 from ...utils.updates import enrich_event
+from ...loggers import logger_dp
 
 from ...enums.update import UpdateType
 from ...types.updates.bot_added import BotAdded
+from ...types.updates.bot_admin_permissions_changed import BotAdminPermissionsChanged
 from ...types.updates.bot_removed import BotRemoved
 from ...types.updates.bot_started import BotStarted
 from ...types.updates.bot_stopped import BotStopped
@@ -38,7 +40,8 @@ UPDATE_MODEL_MAPPING = {
     UpdateType.BOT_STOPPED: BotStopped,
     UpdateType.DIALOG_CLEARED: DialogCleared,
     UpdateType.DIALOG_MUTED: DialogMuted,
-    UpdateType.DIALOG_UNMUTED: DialogUnmuted
+    UpdateType.DIALOG_UNMUTED: DialogUnmuted,
+    UpdateType.BOT_ADMIN_PERMISSIONS_CHANGED: BotAdminPermissionsChanged,
 }
 
 
@@ -59,10 +62,36 @@ async def get_update_model(event: dict, bot: 'Bot'):
 
 
 async def process_update_request(events: dict, bot: 'Bot'):
-    return [
-        await get_update_model(event, bot)
-        for event in events['updates']
-    ]
+    
+    """
+    Разбирает пачку событий long polling — каждое ОТДЕЛЬНО.
+
+    Раньше одно незнакомое событие (`ValueError: Unknown update type`)
+    или поле, на котором падает модель, роняло разбор всей пачки: маркер
+    к тому времени уже сдвинут, и вместе с незнакомым событием терялись
+    нажатия и сообщения других людей из той же пачки (живой лог бота
+    03.10.2026, `bot_admin_permissions_changed`). Теперь такое событие
+    пропускается с одной строкой в логе, остальные обрабатываются.
+    """
+    
+    processed = []
+    
+    for event in events['updates']:
+        update_type = event.get('update_type')
+        
+        if update_type not in UPDATE_MODEL_MAPPING:
+            logger_dp.warning(f'Пропущено событие незнакомого типа: {update_type}')
+            continue
+        
+        try:
+            processed.append(await get_update_model(event, bot))
+        except Exception as e:
+            logger_dp.error(
+                f'Пропущено событие {update_type}: не разобралось '
+                f'({e.__class__.__name__}: {e})'
+            )
+    
+    return processed
 
 
 async def process_update_webhook(event_json: dict, bot: 'Bot'):

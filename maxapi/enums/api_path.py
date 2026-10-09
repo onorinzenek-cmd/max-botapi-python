@@ -10,6 +10,7 @@ class ApiPath(str, Enum):
     """
     
     ME = '/me'
+    ME_COMMANDS = '/me/commands'
     CHATS = '/chats'
     MESSAGES = '/messages'
     UPDATES = '/updates'
