@@ -19,6 +19,7 @@ from .enums.update import UpdateType
 from .methods.add_admin_chat import AddAdminChat
 from .methods.add_members_chat import AddMembersChat
 from .methods.change_info import ChangeInfo
+from .methods.set_my_commands import SetMyCommands
 from .methods.delete_bot_from_chat import DeleteMeFromMessage
 from .methods.delete_chat import DeleteChat
 from .methods.delete_message import DeleteMessage
@@ -56,7 +57,7 @@ if TYPE_CHECKING:
     from .types.attachments.image import PhotoAttachmentRequestPayload
     from .types.attachments.video import Video
     from .types.chats import Chat, ChatMember, Chats
-    from .types.command import BotCommand
+    from .types.command import BotCommand, BotCommands
     from .types.message import Message, Messages, NewMessageLink
     from .types.users import ChatAdmin, User
 
@@ -768,17 +769,18 @@ class Bot(BaseConnection):
     async def set_my_commands(
             self,
             *commands: BotCommand
-        ) -> User:
+        ) -> BotCommands:
         
         """
-        Устанавливает список команд бота.
+        Устанавливает список команд бота (`PATCH /me/commands`).
 
-        :param commands: Список команд
+        :param commands: Список команд, до 32 штук. Без аргументов —
+            удалить все команды.
 
-        :return: Обновленная информация о боте
+        :return: Команды, которые теперь поддерживает бот
         """
         
-        return await ChangeInfo(
+        return await SetMyCommands(
             bot=self,
             commands=list(commands)
         ).fetch()

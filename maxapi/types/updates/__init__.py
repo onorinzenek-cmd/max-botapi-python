@@ -1,5 +1,6 @@
 from typing import Union
 from ...types.updates.bot_added import BotAdded
+from ...types.updates.bot_admin_permissions_changed import BotAdminPermissionsChanged
 from ...types.updates.bot_removed import BotRemoved
 from ...types.updates.bot_started import BotStarted
 from ...types.updates.chat_title_changed import ChatTitleChanged
@@ -14,6 +15,7 @@ from ...types.updates.user_removed import UserRemoved
 
 UpdateUnion = Union[
     BotAdded,
+    BotAdminPermissionsChanged,
     BotRemoved,
     BotStarted,
     ChatTitleChanged,
