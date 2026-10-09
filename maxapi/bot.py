@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import os
+
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING
 
 from .client.default import DefaultConnectionProperties
+from .client.domain import CA_BUNDLE_ENV, choose_api
 from .types.errors import Error
 
 from .types.input_media import InputMedia, InputMediaBuffer
@@ -114,6 +117,8 @@ class Bot(BaseConnection):
         super().__init__()
 
         self.bot = self
+        # адрес и SSL — по MAX_CA_BUNDLE (maxapi/client/domain.py)
+        self.API_URL, self.ssl_context = choose_api(os.environ.get(CA_BUNDLE_ENV))
         self.default_connection = default_connection or DefaultConnectionProperties()
         self.after_input_media_delay = after_input_media_delay or 2.0
         self.auto_check_subscriptions = auto_check_subscriptions
