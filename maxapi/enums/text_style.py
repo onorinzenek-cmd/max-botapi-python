@@ -18,3 +18,4 @@ class TextStyle(Enum):
     USER_MENTION = 'user_mention'
     HEADING = 'heading'
     HIGHLIGHTED = 'highlighted'
+    QUOTE = 'quote'  # цитата: MAX начал присылать её в разметке 21.10.2026
