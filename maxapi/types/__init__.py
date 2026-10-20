@@ -12,6 +12,10 @@ from ..types.updates.user_added import UserAdded
 from ..types.updates.user_removed import UserRemoved
 from ..types.updates.bot_stopped import BotStopped
 from ..types.updates.dialog_cleared import DialogCleared
+from ..types.updates.dialog_removed import DialogRemoved
+from ..types.updates.comment_created import CommentCreated
+from ..types.updates.comment_edited import CommentEdited
+from ..types.updates.comment_removed import CommentRemoved
 from ..types.updates.dialog_muted import DialogMuted
 from ..types.updates.dialog_unmuted import DialogUnmuted
 from ..types.updates import UpdateUnion
@@ -44,6 +48,10 @@ __all__ = [
     'DialogUnmuted',
     'DialogMuted',
     'DialogCleared',
+    'DialogRemoved',
+    'CommentCreated',
+    'CommentEdited',
+    'CommentRemoved',
     'BotStopped',
     'CommandStart',
     'OpenAppButton',

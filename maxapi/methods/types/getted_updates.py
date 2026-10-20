@@ -20,6 +20,10 @@ from ...types.updates.user_removed import UserRemoved
 from ...types.updates.dialog_cleared import DialogCleared
 from ...types.updates.dialog_muted import DialogMuted
 from ...types.updates.dialog_unmuted import DialogUnmuted
+from ...types.updates.comment_created import CommentCreated
+from ...types.updates.comment_edited import CommentEdited
+from ...types.updates.comment_removed import CommentRemoved
+from ...types.updates.dialog_removed import DialogRemoved
 
 if TYPE_CHECKING:
     from ...bot import Bot
@@ -42,6 +46,10 @@ UPDATE_MODEL_MAPPING = {
     UpdateType.DIALOG_MUTED: DialogMuted,
     UpdateType.DIALOG_UNMUTED: DialogUnmuted,
     UpdateType.BOT_ADMIN_PERMISSIONS_CHANGED: BotAdminPermissionsChanged,
+    UpdateType.COMMENT_CREATED: CommentCreated,
+    UpdateType.COMMENT_EDITED: CommentEdited,
+    UpdateType.COMMENT_REMOVED: CommentRemoved,
+    UpdateType.DIALOG_REMOVED: DialogRemoved,
 }
 
 
