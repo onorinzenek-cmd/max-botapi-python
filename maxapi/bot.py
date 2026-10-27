@@ -38,6 +38,7 @@ from .methods.get_me import GetMe
 from .methods.get_me_from_chat import GetMeFromChat
 from .methods.get_members_chat import GetMembersChat
 from .methods.get_messages import GetMessages
+from .methods.get_comments import GetComments
 from .methods.get_pinned_message import GetPinnedMessage
 from .methods.get_updates import GetUpdates
 from .methods.get_upload_url import GetUploadURL
@@ -62,6 +63,7 @@ if TYPE_CHECKING:
     from .types.chats import Chat, ChatMember, Chats
     from .types.command import BotCommand, BotCommands
     from .types.message import Message, Messages, NewMessageLink
+    from .types.comment import Comments
     from .types.users import ChatAdmin, User
 
     from .methods.types.added_admin_chat import AddedListAdminChat
@@ -319,6 +321,36 @@ class Bot(BaseConnection):
         return await self.get_messages(
             message_ids=[message_id]
         )
+
+    async def get_comments(
+            self,
+            message_id: str,
+            count: int = 100,
+            after: Optional[int] = None,
+            before: Optional[int] = None,
+            comment_ids: Optional[List[str]] = None,
+        ) -> Comments:
+
+        """
+        Комментарии к посту канала (бот — админ с правом `read_all_messages`).
+
+        :param message_id: ID поста (`mid`)
+        :param count: Сколько вернуть, 1–100 (по умолчанию 100)
+        :param after: Время в мс, начиная с которого (включительно)
+        :param before: Время в мс, до которого (включительно)
+        :param comment_ids: Только эти комментарии; удалённых в ответе нет
+
+        :return: Страница комментариев
+        """
+
+        return await GetComments(
+            bot=self,
+            message_id=message_id,
+            count=count,
+            after=after,
+            before=before,
+            comment_ids=comment_ids,
+        ).fetch()
 
     async def get_me(self) -> User:
         

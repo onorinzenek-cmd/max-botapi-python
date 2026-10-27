@@ -13,6 +13,7 @@ from ..types.updates.user_removed import UserRemoved
 from ..types.updates.bot_stopped import BotStopped
 from ..types.updates.dialog_cleared import DialogCleared
 from ..types.updates.dialog_removed import DialogRemoved
+from ..types.comment import CommentMessage, CommentMessageBody, Comments
 from ..types.updates.comment_created import CommentCreated
 from ..types.updates.comment_edited import CommentEdited
 from ..types.updates.comment_removed import CommentRemoved
@@ -49,6 +50,9 @@ __all__ = [
     'DialogMuted',
     'DialogCleared',
     'DialogRemoved',
+    'CommentMessage',
+    'CommentMessageBody',
+    'Comments',
     'CommentCreated',
     'CommentEdited',
     'CommentRemoved',

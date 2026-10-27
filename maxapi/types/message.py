@@ -66,11 +66,14 @@ class Recipient(BaseModel):
         user_id (Optional[int]): Идентификатор пользователя. Может быть None.
         chat_id (Optional[int]): Идентификатор чата. Может быть None.
         chat_type (ChatType): Тип получателя (диалог или чат).
+        post_id (Optional[str]): Пост, под которым комментарий (только у
+            комментариев: события `comment_*` и `GET /messages/{id}/comments`).
     """
     
     user_id: Optional[int] = None
     chat_id: Optional[int] = None
     chat_type: ChatType
+    post_id: Optional[str] = None
 
 
 class MessageBody(BaseModel):

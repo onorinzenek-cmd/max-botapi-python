@@ -14,10 +14,11 @@ from ..types.updates.user_added import UserAdded
 from ..types.updates.user_removed import UserRemoved
 from ..types.updates.dialog_cleared import DialogCleared
 from ..types.updates.dialog_removed import DialogRemoved
-from ..types.updates.comment_created import CommentCreated
-from ..types.updates.comment_edited import CommentEdited
 from ..types.updates.dialog_muted import DialogMuted
 from ..types.updates.dialog_unmuted import DialogUnmuted
+from ..types.updates.comment_created import CommentCreated
+from ..types.updates.comment_edited import CommentEdited
+from ..types.updates.comment_removed import CommentRemoved
 
 from ..enums.chat_type import ChatType
 
@@ -27,13 +28,16 @@ if TYPE_CHECKING:
     
 
 async def enrich_event(event_object: Any, bot: Bot) -> Any:
-    if not bot.auto_requests:
+    # События комментариев не обогащаем: они идут по каждому комментарию
+    # каждого канала, где бот админ, и лишний запрос чата на каждое — это
+    # нагрузка на MAX без пользы (автор и пост уже в событии)
+    if not bot.auto_requests or isinstance(event_object, (CommentCreated, CommentEdited, CommentRemoved)):
         return event_object
 
     if getattr(event_object, 'chat_id', None) is not None:
         event_object.chat = await bot.get_chat_by_id(event_object.chat_id)
 
-    if isinstance(event_object, (MessageCreated, MessageEdited, MessageCallback, CommentCreated, CommentEdited)):
+    if isinstance(event_object, (MessageCreated, MessageEdited, MessageCallback)):
         
         if event_object.message.recipient.chat_id is not None:
             event_object.chat = await bot.get_chat_by_id(event_object.message.recipient.chat_id)

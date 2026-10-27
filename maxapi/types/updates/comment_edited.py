@@ -3,7 +3,7 @@ from typing import Optional
 
 from .update import Update
 
-from ...types.message import Message
+from ...types.comment import CommentMessage
 
 
 class CommentEdited(Update):
@@ -14,11 +14,11 @@ class CommentEdited(Update):
     `read_all_messages`.
 
     Attributes:
-        message (Message): Изменённый комментарий.
+        message (CommentMessage): Изменённый комментарий.
         user_locale (Optional[str]): Локаль пользователя.
     """
 
-    message: Message
+    message: CommentMessage
     user_locale: Optional[str] = None
 
     def get_ids(self):
