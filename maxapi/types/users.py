@@ -18,7 +18,9 @@ class User(BaseModel):
         last_name (Optional[str]): Фамилия пользователя. Может быть None.
         username (Optional[str]): Имя пользователя (ник). Может быть None.
         is_bot (bool): Флаг, указывающий, является ли пользователь ботом.
-        last_activity_time (int): Временная метка последней активности.
+        last_activity_time (Optional[int]): Временная метка последней активности.
+            Может отсутствовать: MAX не присылает её, если пользователь скрыл
+            «в сети», и у удалённого аккаунта ('DELETED USER'). Тогда None.
         description (Optional[str]): Описание пользователя. Может быть None.
         avatar_url (Optional[str]): URL аватара пользователя. Может быть None.
         full_avatar_url (Optional[str]): URL полного аватара пользователя. Может быть None.
@@ -30,7 +32,7 @@ class User(BaseModel):
     last_name: Optional[str] = None
     username: Optional[str] = None
     is_bot: bool
-    last_activity_time: int
+    last_activity_time: Optional[int] = None
     description: Optional[str] = None
     avatar_url: Optional[str] = None
     full_avatar_url: Optional[str] = None
